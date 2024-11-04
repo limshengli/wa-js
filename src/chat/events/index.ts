@@ -24,3 +24,5 @@ import './registerReactionsEvent';
 import './registerRevokeMessageEvent';
 import './registerLabelEvent';
 import './registerEditedMessageEvent';
+
+export { onReceivedImageFromMe } from './onReceivedImageFromMeEvent';
