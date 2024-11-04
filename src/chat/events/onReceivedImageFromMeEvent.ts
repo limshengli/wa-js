@@ -14,10 +14,24 @@
  * limitations under the License.
  */
 
-import './events';
-import './patch';
+import { on } from '../../eventEmitter';
+import { blobToBase64 } from '../../util';
+import { downloadMedia } from '../functions';
 
-export * from './defaultSendMessageOptions';
-export { onReceivedImageFromMe } from './events';
-export * from './functions';
-export * from './types';
+export function onReceivedImageFromMe(
+  onCallback: (value: string) => string
+): boolean {
+  on('chat.new_message', async (msg) => {
+    if (
+      msg.id.fromMe &&
+      msg.from?._serialized === msg.to?._serialized &&
+      msg.getWamMediaType() == 2
+    ) {
+      let B = await downloadMedia(msg.id._serialized.replace('_out', '')).then(
+        blobToBase64
+      );
+      onCallback(B);
+    }
+  });
+  return true;
+}
